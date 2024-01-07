@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+.venv3.8/
+ENV/
+env.bak/
+venv.bak/
+
+.vscode/*
+!.vscode/launch.json
+
+# pyInstaller
+build/
+dist/
+
+temp/
+*.xyz
+
+tmp/
+tmp*
