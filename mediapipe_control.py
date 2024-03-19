@@ -184,16 +184,16 @@ async def main():
                 )
                 p_eye_l = np.array(
                     [
-                        pose[0][LANDMARKS.LEFT_EYE].x,
-                        pose[0][LANDMARKS.LEFT_EYE].y,
-                        pose[0][LANDMARKS.LEFT_EYE].z,
+                        pose[0][LANDMARKS.LEFT_EAR].x,
+                        pose[0][LANDMARKS.LEFT_EAR].y,
+                        pose[0][LANDMARKS.LEFT_EAR].z,
                     ]
                 )
                 p_eye_r = np.array(
                     [
-                        pose[0][LANDMARKS.RIGHT_EYE].x,
-                        pose[0][LANDMARKS.RIGHT_EYE].y,
-                        pose[0][LANDMARKS.RIGHT_EYE].z,
+                        pose[0][LANDMARKS.RIGHT_EAR].x,
+                        pose[0][LANDMARKS.RIGHT_EAR].y,
+                        pose[0][LANDMARKS.RIGHT_EAR].z,
                     ]
                 )
 
@@ -222,20 +222,39 @@ async def main():
                 v_shoulder2wrist_l = p_wrist_l - p_shoulder_l
                 v_shoulder2hip_l = np.array([0, 0, 0]) - p_shoulder_l
 
+                # upper body coronal
+                # ang_upper_body = cos_angle_between([1,0], v_shoulder2shoulder[[0,2]])
+                
+                
+                # arms
                 ang_vl = np.arccos(cos_angle_between(v_shoulder2wrist_l[1:], v_shoulder2hip_l[1:]))
                 ang_vr = np.arccos(cos_angle_between(v_shoulder2wrist_r[1:], v_shoulder2hip_r[1:]))
-                # ang_upper_body = cos_angle_between([1,0], v_shoulder2shoulder[[0,2]])
-                cos_ang_eyes = cos_angle_between([1, 0], v_eye2eye[[0, 1]])
-                ang_eyes = np.arccos(cos_ang_eyes)
-                # if cos_ang_eyes < 0:
-                #     ang_eyes = ang_eyes * -1
+                ang_l_deg, ang_r_deg = np.degrees(ang_vl), np.degrees(ang_vr)
                 
-                # ang_upper_body = angle_between([0, -1], v_shoulder2wrist_r[[0,2]])
-                ang_l_deg, ang_r_deg, ang_eyes_deg = np.degrees(ang_vl), np.degrees(ang_vr), np.degrees(ang_eyes)
-                ang_eyes_deg = ang_eyes_deg - 20
-                ang_eyes_deg = np.clip(ang_eyes_deg, -30, 30) * -1
+                # head coronal
+                # cos_ang_eyes = cos_angle_between([1, 0], v_eye2eye[[0, 1]])
+                # ang_eyes = np.arccos(cos_ang_eyes)
+                # ang_eyes_deg = np.degrees(ang_eyes)
+                # ang_eyes_deg = ang_eyes_deg - 20
+                # ang_eyes_deg = np.clip(ang_eyes_deg, -30, 30) * -1
+                
+                # ang_eyes_deg = ang_eyes_deg - 20
+                # ang_eyes_deg = np.clip(ang_eyes_deg, -30, 30) * -1
+                
+                
+                # head traversal
+                cos_head_trav = cos_angle_between([0, 1], v_eye2eye[[0, 2]])
+                head_trav = np.arccos(cos_head_trav)
+                head_trav_deg = np.degrees(head_trav)
+                head_trav_deg = (head_trav_deg - 90) * -1
+                # if cos_head_trav < 0:
+                #     print("negative")
+                    
+                head_trav_deg = np.clip(head_trav_deg, -30, 30)
+                
+                
                 print(
-                    f"left: {ang_l_deg:0.1f}° right: {ang_r_deg:0.1f}° head: {ang_eyes_deg:0.1f}"
+                    f"left: {ang_l_deg:0.1f}° right: {ang_r_deg:0.1f}° head: {head_trav_deg:0.1f}"
                 )
 
                 # last_values_l = np.roll(last_values_l, 1)
@@ -246,13 +265,12 @@ async def main():
                 # avr_l = round(np.average(last_values_l))
                 # avr_r = round(np.average(last_values_r))
 
-                # cmd = "a" + str(-avr_l) + "b" + str(avr_r) + "\n"
                 cmd = (
                     str(round(-ang_l_deg))
                     + "|"
                     + str(round(ang_r_deg))
                     + "|"
-                    + str(round(ang_eyes_deg))
+                    + str(round(head_trav_deg))
                     + "\n"
                 )
                 

@@ -8,7 +8,7 @@ from uselect import poll
 
 m1 = Motor(Port.C)
 m2 = Motor(Port.D)
-m3 = Motor(Port.E)
+m3 = Motor(Port.B)
 
 # Optional: Register stdin for polling. This allows
 # you to wait for incoming data without blocking.
@@ -29,16 +29,16 @@ while True:
         wait(10)
 
     if keyboard.poll(0):
-        # cmd = input()
+        #cmd = input()
         cmd += stdin.read(1)
-
+    
         if cmd[-1] == "\n":
             cmd_arr = cmd[0:-1].split("|")
 
             m1.track_target(int(cmd_arr[0]))
             m2.track_target(int(cmd_arr[1]))
             m3.track_target(int(cmd_arr[2]))
-
-            # m2.run_target(500, deg, then=Stop.COAST)
-
+            
+            #m2.run_target(500, deg, then=Stop.COAST)
+            
             cmd = ""
